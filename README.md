@@ -17,7 +17,7 @@
 # 💻 About Me
 
 ```bash
-> whoami
+> whoami? <enter>
 
 Name        : Mohammad Talha Danish Khan
 Role        : Java Backend Developer
