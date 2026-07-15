@@ -1,6 +1,6 @@
 <div align="center">
 
-# Hi, I'm Mohammad Talha Khan 👋
+# Hi, I'm Mohammad Talha Danish Khan 👋
 
 <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=24&duration=3000&pause=1000&color=58A6FF&center=true&vCenter=true&width=700&lines=Java+Backend+Developer;Building+REST+APIs+with+Spring+Boot;Clean+Code+%7C+Problem+Solver;Always+Learning+Something+New" />
 
@@ -14,7 +14,7 @@
 
 ```json
 {
-  "name": "Mohammad Talha Khan",
+  "name": "Mohammad Talha Danish Khan",
   "role": "Java Backend Developer",
   "location": "Mumbai, India",
   "building": [
