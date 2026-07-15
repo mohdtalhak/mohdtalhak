@@ -193,18 +193,6 @@ Learning
 
 ---
 
-# 📊 GitHub Statistics
-
-<p align="center">
-
-<img height="180em" src="https://github-readme-stats.vercel.app/api?username=mohdtalhak&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true&count_private=true"/>
-
-<img height="180em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=mohdtalhak&layout=compact&theme=tokyonight&hide_border=true"/>
-
-</p>
-
----
-
 # 🔥 GitHub Streak
 
 <p align="center">
@@ -244,7 +232,9 @@ while(alive){
 
     Build();
 
-    Refactor();
+    Test();
+
+    Clean();
 
     Repeat();
 
