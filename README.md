@@ -39,11 +39,7 @@ Learning
 
 ✔ JWT Authentication
 
-✔ Docker
-
-✔ Microservices
-
-✔ Redis
+✔ SMTP
 
 ✔ System Design
 ```
