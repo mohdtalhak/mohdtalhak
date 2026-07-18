@@ -147,7 +147,6 @@ Learning
 - 🔑 JWT Authentication
 - 🐳 Docker
 - ☁ Cloud Basics
-- ⚙ Microservices
 - 📦 Redis
 - 📨 Kafka
 - 🏛 System Design
