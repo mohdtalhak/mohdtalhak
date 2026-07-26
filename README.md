@@ -1,10 +1,10 @@
 <div align="center">
 
-# 👋 Hi, I'm Mohammad Talha Danish Khan
+# yo it's ya boy Mohammad Talha Danish Khan 🗿
 
-### ☕ Java Backend Developer • Spring Boot Enthusiast • REST API Developer
+### ☕ Backend dev who codes different • Spring Boot certified rizz • REST APIs so clean it's giving aura
 
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=24&duration=3500&pause=1000&color=58A6FF&center=true&vCenter=true&width=900&lines=Java+Backend+Developer;Spring+Boot+%7C+REST+API+Developer;Building+Scalable+Backend+Applications;Clean+Code+%7C+Problem+Solver;Always+Learning+Something+New"/>
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=24&duration=3500&pause=1000&color=58A6FF&center=true&vCenter=true&width=900&lines=no+cap+I+debug+at+2am;Spring+Boot+%7C+REST+API+Dev+fr+fr;Building+Scalable+Apps%2C+Zero+Delulu;Clean+Code+%3D+Main+Character+Energy;Always+Learning%2C+Never+Cooked"/>
 
 <br>
 
@@ -23,39 +23,41 @@ Name        : Mohammad Talha Danish Khan
 Role        : Java Backend Developer
 Location    : Mumbai, India
 
-Currently Building
-────────────────────────────────
+> tell me the truth <enter>
 
-🚗 Car Showroom Management System
+@RestController
+@RequestMapping("/api/v1/reality-check")
+public class ArchitectureController {
 
-💼 Freelance Management Backend
+    @GetMapping("/whatisfrontend")
+    public ResponseEntity<Map<String, String>> getSystemStatus() {
+        return ResponseEntity.ok()
+            .header("FrontEnd-Noob fr fr", "Backend-Driven")
+            .body(Map.of(
+                "philosophy", "The front teeth used for appearance are different from the back teeth used for chewing. 🙄",
+                "backend", "We do the heavy chewing. Stable. Scalable. Strict-typed. 🗿",
+                "frontend", "Crying because a div shifted 2px and node_modules exploded. 😏",
+                "truth", "You only look pretty because my API responses are immaculate. 👑"
+            ));
+    }
+}
 
-🎓 Student Management System
 
-Learning
-────────────────────────────────
-
-✔ Spring Security
-
-✔ JWT Authentication
-
-✔ SMTP
-
-✔ System Design
 ```
 
 ---
 
 # 🚀 What I Love
 
-- ☕ Java Development
-- 🌱 Spring Boot
-- 🔗 RESTful APIs
-- 🗄 Database Design
-- 🧩 Backend Architecture
-- ⚡ Performance Optimization
-- 🧹 Clean Code
-- 📚 Learning New Technologies
+- ☕ Java — the OG, no cap
+- 🌱 Spring Boot — does the heavy lifting so I don't gotta
+- 🔗 RESTful APIs — clean endpoints only, we don't do mid responses
+- 🗄 Database Design — organizing chaos, it's giving structure
+- 🧩 Backend Architecture — building different fr
+- ⚡ Performance Optimization — nobody's waiting 5 seconds, we're not built like that
+- 🧹 Clean Code — future me deserves better, periodt
+- 📚 Learning New Technologies — never cooked, always leveling up
+- 🤡 The Main Thing - frontend cries over a 2px div shift, backend just casually runs the whole show — no cap, i'm him 🗿
 
 ---
 
@@ -108,35 +110,39 @@ Learning
 # 🏗 Backend Skills
 
 ```text
-✔ REST APIs
+✔ REST APIs — designed without needing 5 Stack Overflow tabs open
 
-✔ CRUD Applications
+✔ CRUD Applications — Create, Read, Update, and "sir please don't Delete"
 
-✔ MVC Architecture
+✔ MVC Architecture — Model, View, Controller, and my remaining sanity
 
-✔ Layered Architecture
+✔ Layered Architecture — Controller → Service → Repo → tears
 
-✔ DTO Pattern
+✔ DTO Pattern — entities stay home, DTOs go outside to meet people
 
-✔ Exception Handling
+✔ Exception Handling — not just catch(Exception e) { pray(); }, actual handlers
 
-✔ Bean Validation
+✔ Bean Validation — @NotNull, because users WILL leave it empty
 
-✔ Spring Data JPA
+✔ Spring Data JPA — writes SQL so I don't have to (mostly)
 
-✔ Hibernate
+✔ Hibernate — makes Java objects and SQL tables best friends
 
-✔ Authentication
+✔ Authentication — trust issues, professionally implemented
 
-✔ PostgreSQL
+✔ PostgreSQL — my data's therapist
 
-✔ MySQL
+✔ MySQL — my data's other therapist
 
-✔ Git Version Control
+✔ Git Version Control — git commit -m "fixed it" (narrator: it was not fixed)
 
-✔ API Testing (Postman)
+✔ API Testing (Postman) — trust, but verify with a 200 OK
 
-✔ Clean Code Principles
+✔ Clean Code Principles — future-me sends past-me a thank-you note
+
+$ status --vibe-check
+
+no cap, this backend is straight bussin — zero delulu, all rizz, code so clean it's giving aura 💯🔥
 ```
 
 ---
@@ -208,15 +214,6 @@ Learning
 
 ---
 
-# 🏆 GitHub Trophies
-
-<p align="center">
-
-<img src="https://github-profile-trophy.vercel.app/?username=mohdtalhak&theme=tokyonight&no-frame=true&margin-w=15&margin-h=15"/>
-
-</p>
-
----
 
 # 💭 Developer Philosophy
 
