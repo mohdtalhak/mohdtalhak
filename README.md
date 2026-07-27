@@ -1,6 +1,6 @@
 <div align="center">
 
-# yo it's ya boy Mohammad Talha Danish Khan 🗿
+# yo it's ya boy Mohammad Talha Khan 🗿
 
 ### ☕ Backend dev who codes different • Spring Boot certified rizz • REST APIs so clean it's giving aura
 
@@ -144,18 +144,6 @@ $ status --vibe-check
 
 no cap, this backend is straight bussin — zero delulu, all rizz, code so clean it's giving aura 💯🔥
 ```
-
----
-
-# 🎯 Currently Exploring
-
-- 🔐 Spring Security
-- 🔑 JWT Authentication
-- 🐳 Docker
-- ☁ Cloud Basics
-- 📦 Redis
-- 📨 Kafka
-- 🏛 System Design
 
 ---
 
