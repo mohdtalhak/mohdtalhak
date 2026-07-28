@@ -174,7 +174,7 @@ no cap, this backend is straight bussin — zero delulu, all rizz, code so clean
 
 ## 🎓 Student Management System
 
-> Java • Spring Boot
+> Basic Java 
 
 - CRUD Operations
 - Layered Architecture
