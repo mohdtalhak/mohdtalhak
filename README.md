@@ -186,7 +186,7 @@ no cap, this backend is straight bussin — zero delulu, all rizz, code so clean
 
 <p align="center">
 
-<img src="https://streak-stats.demolab.com/?user=mohdtalhak&theme=tokyonight&hide_border=true&cache_bust=1"/>
+<img src="https://github-readme-streak-stats-eight.vercel.app?user=mohdtalhak&theme=tokyonight&hide_border=true"/>
 
 </p>
 
