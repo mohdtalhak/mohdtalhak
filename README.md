@@ -134,6 +134,10 @@ public class ArchitectureController {
 
 ✔ MySQL — my data's other therapist
 
+✔ OracleSQL — my data's other other therapist
+
+✔ SQLite — my data's other other other therapist
+
 ✔ Git Version Control — git commit -m "fixed it" (narrator: it was not fixed)
 
 ✔ API Testing (Postman) — trust, but verify with a 200 OK
