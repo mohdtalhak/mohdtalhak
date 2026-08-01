@@ -23,7 +23,7 @@ Name        : Mohammad Talha Danish Khan
 Role        : Java Backend Developer
 Location    : Mumbai, India
 
-> tell me the truth <enter>
+> tell me the truth in my language <enter>
 
 @RestController
 @RequestMapping("/api/v1/reality-check")
