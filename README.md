@@ -57,7 +57,7 @@ public class ArchitectureController {
 - ⚡ Performance Optimization — nobody's waiting 5 seconds, we're not built like that
 - 🧹 Clean Code — future me deserves better, periodt
 - 📚 Learning New Technologies — never cooked, always leveling up
-- 🤡 The Main Thing - frontend cries over a 2px div shift, backend just casually runs the whole show — no cap, i'm him 🗿
+- 🤡 The Main Thing - frontend cries over a 2px div shift, backend just casually runs the whole show  no cap, i'm him 🗿
 
 ---
 
