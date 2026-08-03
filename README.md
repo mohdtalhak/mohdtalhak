@@ -16,34 +16,49 @@
 
 # 💻 About Me
 
+```yaml
+Name:        Mohammad Talha Danish Khan
+Role:        Java Backend Developer
+Location:    Mumbai, India
+Uptime:      100% (Unlike the frontend dev server)
+```
+
 ```bash
-> whoami? <enter>
+\$ curl -X GET http://localhost:8080/api/v1/reality-check/what-is-frontend \
+  -H "Authorization: Bearer backend_is_the_boss_token" \
+  -H "Accept: application/json"
+```
 
-Name        : Mohammad Talha Danish Khan
-Role        : Java Backend Developer
-Location    : Mumbai, India
-
-> tell me the truth in my language <enter>
-
+```java
 @RestController
 @RequestMapping("/api/v1/reality-check")
+@CrossOrigin(origins = "http://localhost:3000") // Fine, I'll allow port 3000 so you can finally stop crying. 🙄
 public class ArchitectureController {
 
-    @GetMapping("/whatisfrontend")
-    public ResponseEntity<Map<String, String>> getSystemStatus() {
+    @GetMapping("/what-is-frontend")
+    public ResponseEntity<Map<String, Object>> getSystemStatus() {
         return ResponseEntity.ok()
-            .header("FrontEnd-Noob fr fr", "Backend-Driven")
+            .header("X-Powered-By", "Spring-Boot-And-Pure-Spite")
+            .header("X-Frontend-Anxiety-Level", "Maximum")
             .body(Map.of(
-                "philosophy", "The front teeth used for appearance are different from the back teeth used for chewing. 🙄",
-                "backend", "We do the heavy chewing. Stable. Scalable. Strict-typed. 🗿",
-                "frontend", "Crying because a div shifted 2px and node_modules exploded. 😏",
-                "truth", "You only look pretty because my API responses are immaculate. 👑"
+                "philosophy", "The front teeth are for appearance; the back teeth do the chewing. 🦷",
+                "backend",    "We do the heavy chewing. Stable. Scalable. Strictly-Typed. Multithreaded. 🗿",
+                "frontend",   "Panicking because a div shifted 2px, node_modules exploded, or Vite took 0.5s longer to reload. 😏",
+                "the_truth",  "You only look pretty because my API responses are immaculate, indexed, and heavily cached. 👑",
+                "fun_fact",   "I literally had to whitelist your localhost origin today because a certain someone couldn't bypass CORS. 💀"
             ));
     }
+
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<Map<String, String>> handleFrontendLogic() {
+        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(Map.of(
+            "error", "418 I'm a teapot",
+            "reason", "The frontend developer tried to pass 'undefined' as an Object again. 🤦‍♂️"
+        ));
+    }
 }
-
-
 ```
+
 
 ---
 
