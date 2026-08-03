@@ -17,7 +17,7 @@
 # 💻 About Me
 
 ```yaml
-# TITLE: Core Developer Telemetry & Diagnostics 
+# TITLE: 🗿 bro thinks he's compiling with the sip of caffeine (it's me, i'm bro)
 Name:        Mohammad Talha Danish Khan
 Role:        Java Backend Developer
 Location:    Mumbai, India
