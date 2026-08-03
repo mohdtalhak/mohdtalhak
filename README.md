@@ -17,6 +17,7 @@
 # 💻 About Me
 
 ```yaml
+# TITLE: Core Developer Telemetry & Diagnostics 
 Name:        Mohammad Talha Danish Khan
 Role:        Java Backend Developer
 Location:    Mumbai, India
@@ -24,12 +25,14 @@ Uptime:      100% (Unlike the frontend dev server)
 ```
 
 ```bash
+# TITLE: Spying on the Frontend Network Tab...
 \$ curl -X GET http://localhost:8080/api/v1/reality-check/what-is-frontend \
   -H "Authorization: Bearer backend_is_the_boss_token" \
   -H "Accept: application/json"
 ```
 
 ```java
+// TITLE: The Immaculate Enterprise Architecture Blueprint in my Language that is PEAK!
 @RestController
 @RequestMapping("/api/v1/reality-check")
 @CrossOrigin(origins = "http://localhost:3000") // Fine, I'll allow port 3000 so you can finally stop crying. 🙄
@@ -58,7 +61,6 @@ public class ArchitectureController {
     }
 }
 ```
-
 
 ---
 
