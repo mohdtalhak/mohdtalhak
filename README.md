@@ -168,41 +168,6 @@ no cap, this backend is straight bussin — zero delulu, all rizz, code so clean
 
 ---
 
-# 🚀 Featured Projects
-
-## 🚗 Car Showroom Management System
-
-> Spring Boot • PostgreSQL • REST API
-
-- Vehicle Management
-- Customer Management
-- Sales Management
-- Inventory Management
-
----
-
-## 💼 Freelance Management Backend
-
-> Spring Boot • PostgreSQL
-
-- JWT Authentication
-- Client Management
-- Projects
-- Payments
-- APIs
-
----
-
-## 🎓 Student Management System
-
-> Basic Java 
-
-- CRUD Operations
-- Layered Architecture
-- Database Integration
-
----
-
 # 🔥 GitHub Streak
 
 <p align="center">
