@@ -56,8 +56,8 @@
   </div>
 
   <script>
-    // 1. PASTE YOUR FREE GEMINI API KEY INSIDE THE QUOTES BELOW:
-    const GEMINI_API_KEY = "PASTE_YOUR_GEMINI_API_KEY_HERE";
+    // PASTE YOUR GEMINI API KEY INSIDE THE QUOTES BELOW
+    const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
 
     const terminal = document.getElementById('terminal');
     const input = document.getElementById('cmdInput');
@@ -87,8 +87,8 @@
         } else if (lower === 'clear') {
           terminal.innerHTML = '';
         } else {
-          if (!GEMINI_API_KEY || GEMINI_API_KEY === "AQ.Ab8RN6KzMH8CLRxDkozywCMAN8CvipRmiL5Wv9XMqMvCisHVVg") {
-            printLine('sh: AI key missing in code. Replace PASTE_YOUR_GEMINI_API_KEY_HERE inside index.html.', 'error');
+          if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
+            printLine('sh: AI key missing in script. Add your API key to index.html.', 'error');
             return;
           }
           printLine('AI_Daemon: Thinking...', 'line');
