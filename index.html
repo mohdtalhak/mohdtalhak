@@ -103,7 +103,6 @@
     });
 
     async function fetchAIResponse(userPrompt, statusElement) {
-      // Automatic fallback chain to route around high-demand spikes
       const models = ['gemini-flash-latest', 'gemini-3.6-flash'];
       
       for (const model of models) {
@@ -126,8 +125,8 @@
           if (data.candidates && data.candidates[0].content.parts[0].text) {
             statusElement.textContent = `Terminal: ${data.candidates[0].content.parts[0].text.trim()}`;
             return;
-          } else if (data.error && data.error.message && data.error.message.includes('high demand')) {
-            continue; // Fail over to next model
+          } else if (data.error && (data.error.code === 429 || (data.error.message && (data.error.message.includes('high demand') || data.error.message.includes('quota'))))) {
+            continue; // Catch quota/high demand limits and failover to next model
           } else {
             statusElement.textContent = `[ERROR] ${data.error ? data.error.message : 'Unable to generate response.'}`;
             statusElement.className = 'line error';
@@ -138,7 +137,7 @@
         }
       }
 
-      statusElement.textContent = `[ERROR] High demand spike on backend API. Please try again in a few seconds.`;
+      statusElement.textContent = `[ERROR] Rate limit or quota exceeded. Please wait 30 seconds before sending another command.`;
       statusElement.className = 'line error';
     }
   </script>
