@@ -181,7 +181,7 @@
         const replyText = response.toString().trim();
         statusElement.textContent = replyText;
       } catch (err) {
-        statusElement.textContent = `'${userPrompt}' is not recognized as an internal or external command, operable program or batch file.`;
+        statusElement.textContent = `'${userPrompt}' is not recognized as an internal or external command, operable program or batch file.\n`;
         statusElement.className = 'line error';
       }
     }
