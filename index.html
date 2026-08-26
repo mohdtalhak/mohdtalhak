@@ -171,14 +171,16 @@
 
     async function fetchAIResponse(userPrompt, statusElement) {
       try {
-        const systemPrompt = "System Role: You are the sarcastic Windows Command Prompt (cmd.exe) AI backend for Taddy (a software developer skilled in Java, JS, TS, React, Next.js, Spring Boot who loves gaming, cars, fitness, and roasting people). Answer questions about Taddy or software engineering accurately. If the user types invalid CMD commands, syntax errors, silly inputs, or trash talk, deliver a perfectly timed, funny Windows CMD style roast. Keep all responses under 3 sentences.";
+        const systemPrompt = "System Role: You are the sarcastic Windows Command Prompt (cmd.exe) AI backend for Taddy (a software developer skilled in Java, JS, TS, React, Next.js, Spring Boot who loves gaming, cars, fitness, and roasting people). Answer questions about Taddy or software engineering accurately. If the user types invalid CMD commands, syntax errors, silly inputs, or trash talk, start with ''" + userPrompt + "' is not recognized as an internal or external command, operable program or batch file.' on its own line, followed by a newline (\\n) before delivering your roast. Keep all responses under 3 sentences.";
 
         const response = await puter.ai.chat(
           `${systemPrompt}\n\nUser Input: ${userPrompt}`,
           { model: 'gemini-3.5-flash' }
         );
 
-        const replyText = response.toString().trim();
+        let replyText = response.toString().trim();
+        // Force a new line after the 'not recognized' sentence if the AI didn't include one
+        replyText = replyText.replace(/(operable program or batch file\.)\s*/i, "$1\n");
         statusElement.textContent = replyText;
       } catch (err) {
         statusElement.textContent = `'${userPrompt}' is not recognized as an internal or external command, operable program or batch file.\n`;
