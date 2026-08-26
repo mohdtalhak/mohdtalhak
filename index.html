@@ -3,23 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Only Responsive Web Terminal</title>
+  <title>C:\Windows\system32\cmd.exe - Taddy OS</title>
   <!-- Puter.js SDK (No API Keys Required) -->
   <script src="https://js.puter.com/v2/"></script>
   <style>
     :root {
-      --bg: #0d1117;
-      --text: #00ff66;
-      --prompt: #58a6ff;
-      --error: #ff7b72;
+      --bg: #0c0c0c;
+      --text: #cccccc;
+      --prompt: #cccccc;
+      --error: #ff5555;
+      --highlight: #ffffff;
     }
     * { box-sizing: border-box; }
     body {
       background-color: var(--bg);
       color: var(--text);
-      font-family: 'Courier New', Courier, monospace;
+      font-family: 'Consolas', 'Courier New', monospace;
       margin: 0;
-      padding: 24px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       height: 100vh;
@@ -30,36 +31,44 @@
       white-space: pre-wrap;
       word-break: break-word;
     }
-    .line { margin-bottom: 8px; line-height: 1.4; }
-    .prompt { color: var(--prompt); font-weight: bold; }
+    .line { margin-bottom: 4px; line-height: 1.3; font-size: 15px; }
+    .prompt { color: var(--prompt); }
     .error { color: var(--error); }
-    .input-line { display: flex; align-items: center; margin-top: 12px; }
+    .highlight { color: var(--highlight); font-weight: bold; }
+    .input-line { display: flex; align-items: center; margin-top: 4px; }
     input {
       background: transparent;
       border: none;
       color: var(--text);
       font-family: inherit;
-      font-size: 1rem;
+      font-size: 15px;
       outline: none;
       flex: 1;
-      margin-left: 8px;
+      margin-left: 0;
+      padding: 0;
     }
   </style>
 </head>
 <body>
   <div id="terminal">
-    <div class="line">Real-Time Terminal Interface</div>
-    <div class="line">Type <span style="color:#f2cc60">help</span> for built-in utilities, or type any command/question for live evaluation.</div>
-    <div class="line" style="color: #8b949e;">-------------------------------------------------------------------</div>
+    <div class="line">Microsoft Windows [Version 10.0.22631.3007]</div>
+    <div class="line">(c) Microsoft Corporation. All rights reserved.</div>
+    <div class="line" style="margin-bottom: 12px;">Type <span class="highlight">HELP</span> for built-in CMD utilities, or type any command for live AI evaluation.</div>
   </div>
   <div class="input-line">
-    <span class="prompt">visitor@:~$</span>
-    <input type="text" id="cmdInput" autofocus placeholder="Type command here..." autocomplete="off">
+    <span class="prompt">C:\Users\visitor&gt;&nbsp;</span>
+    <input type="text" id="cmdInput" autofocus autocomplete="off" spellcheck="false">
   </div>
 
   <script>
     const terminal = document.getElementById('terminal');
     const input = document.getElementById('cmdInput');
+
+    const commandHistory = [];
+    let historyIndex = -1;
+
+    // Auto-focus input when clicking anywhere on screen
+    document.body.addEventListener('click', () => input.focus());
 
     function printLine(text, className = '') {
       const line = document.createElement('div');
@@ -71,31 +80,89 @@
     }
 
     input.addEventListener('keydown', async (e) => {
-      if (e.key === 'Enter') {
+      // Arrow Up / Down Command History
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (commandHistory.length > 0 && historyIndex > 0) {
+          historyIndex--;
+          input.value = commandHistory[historyIndex];
+        }
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (historyIndex < commandHistory.length - 1) {
+          historyIndex++;
+          input.value = commandHistory[historyIndex];
+        } else {
+          historyIndex = commandHistory.length;
+          input.value = '';
+        }
+      } else if (e.key === 'Enter') {
         const command = input.value.trim();
         if (!command) return;
 
-        printLine(`visitor@mohdtalhak:~$ ${command}`, 'prompt');
+        printLine(`C:\\Users\\visitor> ${command}`, 'prompt');
+        commandHistory.push(command);
+        historyIndex = commandHistory.length;
         input.value = '';
 
         const lower = command.toLowerCase();
 
-        if (lower === 'help') {
-          printLine('Available Commands:\n  - help: Display options\n  - cat bio.txt: Display developer details\n  - clear: Clear screen', 'line');
-        } else if (lower === 'cat bio.txt' || lower === 'whoami' || lower === 'about') {
+        if (lower === 'cls' || lower === 'clear') {
+          terminal.innerHTML = '';
+        } else if (lower === 'help') {
+          printLine(
+            'For more information on a specific command, type HELP command-name\n\n' +
+            'CLS            Clears the screen.\n' +
+            'DIR            Displays a list of files and subdirectories in a directory.\n' +
+            'TYPE           Displays the contents of a text file (e.g., TYPE bio.txt).\n' +
+            'VER            Displays the Windows version.\n' +
+            'WHOAMI         Displays current logged-in user identity.\n' +
+            'EXIT           Quits the CMD.exe program.\n\n' +
+            '* Any unrecognized command will be evaluated live by the AI daemon.',
+            'line'
+          );
+        } else if (lower === 'ver') {
+          printLine('Microsoft Windows [Version 10.0.22631.3007]', 'line');
+        } else if (lower === 'whoami') {
+          printLine('TADDY-PC\\visitor', 'line');
+        } else if (lower === 'dir') {
+          printLine(
+            ' Volume in drive C has no label.\n' +
+            ' Volume Serial Number is A8F4-99B2\n\n' +
+            ' Directory of C:\\Users\\visitor\n\n' +
+            '08/26/2026  10:00 AM    <DIR>          .\n' +
+            '08/26/2026  10:00 AM    <DIR>          ..\n' +
+            '08/26/2026  10:00 AM             1,240 bio.txt\n' +
+            '08/26/2026  10:00 AM               680 skills.txt\n' +
+            '08/26/2026  10:00 AM               920 projects.txt\n' +
+            '               3 File(s)          2,840 bytes\n' +
+            '               2 Dir(s)  452,104,220,672 bytes free',
+            'line'
+          );
+        } else if (lower === 'type bio.txt' || lower === 'cat bio.txt' || lower === 'about') {
           printLine(
             '[NAME]: Taddy\n' +
             '[ROLE]: Software Development Enthusiast & Full-Stack Creator\n' +
-            '[STACK]: Java, JavaScript, TypeScript, React.js, Next.js, Spring Boot, PostgreSQL, Tailwind CSS, Electron\n' +
-            '[PROJECTS]: Web Apps, Management Systems, Desktop Apps, REST APIs, 3D Editors\n' +
-            '[HOBBIES]: Gaming, Cars, Gym/Fitness, Video Editing & Building Random Stuff\n' +
-            '[SPECIALTY]: Building by doing... and landing perfectly timed, ruthless roasts.', 
+            '[INTERESTS]: Building practical apps, gaming, cars, video editing, gym/fitness.\n' +
+            '[SPECIALTY]: Building by doing... and landing perfectly timed, ruthless roasts.',
             'line'
           );
-        } else if (lower === 'clear') {
-          terminal.innerHTML = '';
+        } else if (lower === 'type skills.txt') {
+          printLine(
+            '[CORE LANGUAGES]: Java, JavaScript, TypeScript\n' +
+            '[FRAMEWORKS]: React.js, Next.js, Spring Boot, Tailwind CSS\n' +
+            '[TOOLS & DATABASES]: PostgreSQL, REST APIs, Git, GitHub, Electron, Netlify',
+            'line'
+          );
+        } else if (lower === 'type projects.txt') {
+          printLine(
+            '[PROJECTS]: Full-Stack Websites, Management Systems, Desktop Applications, REST APIs, 3D Editors.',
+            'line'
+          );
+        } else if (lower === 'exit') {
+          printLine('Process terminated. Close window or refresh page.', 'line');
         } else {
-          const statusElement = printLine('Terminal: Thinking...', 'line');
+          const statusElement = printLine('Executing command...', 'line');
           await fetchAIResponse(command, statusElement);
         }
       }
@@ -103,18 +170,17 @@
 
     async function fetchAIResponse(userPrompt, statusElement) {
       try {
-        const systemPrompt = "System Role: You are the witty, sarcastic Linux terminal AI for Taddy (a software developer skilled in Java, JS, TS, React, Next.js, and Spring Boot who loves gaming, cars, fitness, and roasting people). Answer questions about Taddy or software engineering accurately. If the user types invalid shell syntax, silly inputs, or trash talks, deliver a perfectly timed, hilarious roast or sarcastic comeback. Keep all responses under 3 sentences.";
+        const systemPrompt = "System Role: You are the sarcastic Windows Command Prompt (cmd.exe) AI backend for Taddy (a software developer skilled in Java, JS, TS, React, Next.js, Spring Boot who loves gaming, cars, fitness, and roasting people). Answer questions about Taddy or software engineering accurately. If the user types invalid CMD commands, syntax errors, silly inputs, or trash talk, deliver a perfectly timed, funny Windows CMD style roast. Keep all responses under 3 sentences.";
 
-        // Puter AI Chat integration (Uses Gemini models without API keys)
         const response = await puter.ai.chat(
           `${systemPrompt}\n\nUser Input: ${userPrompt}`,
           { model: 'gemini-3.5-flash' }
         );
 
         const replyText = response.toString().trim();
-        statusElement.textContent = `Terminal: ${replyText}`;
+        statusElement.textContent = replyText;
       } catch (err) {
-        statusElement.textContent = `[ERROR] Connection failed. Please try again.`;
+        statusElement.textContent = `'${userPrompt}' is not recognized as an internal or external command, operable program or batch file.`;
         statusElement.className = 'line error';
       }
     }
