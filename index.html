@@ -16,7 +16,7 @@
     }
     * { box-sizing: border-box; }
     body {
-      background-color: #1a1a1a;
+      background-color: var(--bg);
       color: var(--text);
       font-family: 'Consolas', 'Courier New', monospace;
       margin: 0;
@@ -37,9 +37,10 @@
       flex-direction: column;
       border: 1px solid #333;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
     }
 
-    /* Title Bar */
+    /* Title Bar / Navbar */
     .title-bar {
       background: #1f1f1f;
       height: 32px;
@@ -49,7 +50,14 @@
       padding: 0 10px;
       user-select: none;
       border-bottom: 1px solid #2b2b2b;
+      transition: display 0.2s ease;
     }
+    
+    /* Hide Title Bar when in fullscreen mode */
+    body.is-fullscreen .title-bar {
+      display: none;
+    }
+
     .title-bar-text {
       font-size: 13px;
       color: #cccccc;
@@ -116,6 +124,24 @@
       padding: 0;
     }
 
+    /* Floating restoration hint when in full screen without navbar */
+    #fsHint {
+      display: none;
+      position: fixed;
+      top: 10px;
+      right: 15px;
+      background: rgba(30, 30, 30, 0.8);
+      color: #888;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    body.is-fullscreen #fsHint {
+      display: block;
+    }
+
     /* Simulated BSOD Overlay */
     #bsod {
       display: none;
@@ -134,17 +160,19 @@
 </head>
 <body>
 
+  <div id="fsHint">Press ESC to exit Fullscreen</div>
+
   <!-- Main Window -->
-  <div class="cmd-window">
-    <div class="title-bar">
+  <div class="cmd-window" id="cmdWindow">
+    <div class="title-bar" id="titleBar">
       <div class="title-bar-text">
         <div class="cmd-icon">&gt;_</div>
         <span id="windowTitle">Command Prompt - C:\Windows\system32\cmd.exe</span>
       </div>
       <div class="window-controls">
-        <div class="control-btn" onclick="printLine('Window minimized.', 'line')">─</div>
-        <div class="control-btn" onclick="toggleFullscreen()">□</div>
-        <div class="control-btn close" onclick="triggerBSOD()">✕</div>
+        <div class="control-btn" title="Minimize" onclick="funnyMinimize()">─</div>
+        <div class="control-btn" title="Toggle Fullscreen" onclick="toggleScreenMode()">□</div>
+        <div class="control-btn close" title="Close" onclick="triggerBSOD()">✕</div>
       </div>
     </div>
 
@@ -174,12 +202,14 @@
     const input = document.getElementById('cmdInput');
     const promptText = document.getElementById('promptText');
     const cmdBody = document.getElementById('cmdBody');
+    const cmdWindow = document.getElementById('cmdWindow');
 
     let currentPath = "C:\\Users\\visitor";
     const commandHistory = [];
     let historyIndex = -1;
+    let initialInteractionDone = false;
 
-    // Available commands for TAB autocompletion
+    // Commands for TAB autocompletion
     const autoCommands = [
       'help', 'cls', 'clear', 'dir', 'type', 'ver', 'whoami', 'about', 
       'exit', 'color', 'systeminfo', 'ipconfig', 'ping', 'tree', 'matrix',
@@ -194,10 +224,49 @@
       'c': '#ff5555', 'd': '#ff00ff', 'e': '#ffff00', 'f': '#ffffff'
     };
 
-    // Auto-focus input when clicking terminal screen
+    // Trigger full screen on first user interaction (Browser security requirement)
+    function enterFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    }
+
     document.body.addEventListener('click', (e) => {
-      if(!e.target.classList.contains('control-btn')) input.focus();
+      if (!initialInteractionDone) {
+        initialInteractionDone = true;
+        enterFullscreen();
+      }
+      if (!e.target.classList.contains('control-btn')) input.focus();
     });
+
+    // Listen for Fullscreen Changes to update layout & hide navbar
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement) {
+        document.body.classList.add('is-fullscreen');
+      } else {
+        document.body.classList.remove('is-fullscreen');
+      }
+    });
+
+    function toggleScreenMode() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    // Funny Minimize Button Action
+    function funnyMinimize() {
+      cmdWindow.style.transform = 'scale(0.01) translateY(1000px)';
+      cmdWindow.style.opacity = '0';
+      
+      setTimeout(() => {
+        cmdWindow.style.transform = 'scale(1) translateY(0)';
+        cmdWindow.style.opacity = '1';
+        printLine('[SYSTEM ERROR]: Permission Denied. You cannot minimize your real-life responsibilities.', 'error');
+      }, 650);
+    }
 
     function printLine(text, className = '') {
       const line = document.createElement('div');
@@ -206,14 +275,6 @@
       terminal.appendChild(line);
       cmdBody.scrollTop = cmdBody.scrollHeight;
       return line;
-    }
-
-    function toggleFullscreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      } else {
-        document.exitFullscreen().catch(() => {});
-      }
     }
 
     function triggerBSOD() {
@@ -229,7 +290,7 @@
       promptText.textContent = `${currentPath}> `;
     }
 
-    // Keydown Handling (Enter, Arrows, Tab)
+    // Keydown Handling
     input.addEventListener('keydown', async (e) => {
       if (e.key === 'Tab') {
         e.preventDefault();
@@ -266,7 +327,7 @@
 
         const lower = command.toLowerCase();
 
-        // 1. Built-in Local Commands
+        // Built-in Commands
         if (lower === 'cls' || lower === 'clear') {
           terminal.innerHTML = '';
         } 
@@ -302,7 +363,7 @@
             document.documentElement.style.setProperty('--text', colorMap[arg[1]]);
             printLine(`Console color updated (${arg.toUpperCase()}).`, 'line');
           } else {
-            printLine('Sets default console colors. Usage: COLOR [attr] (e.g., COLOR 0A for Matrix Green, COLOR 0F for White)', 'line');
+            printLine('Usage: COLOR [attr] (e.g., COLOR 0A for Matrix Green, COLOR 0F for White)', 'line');
           }
         }
         else if (lower.startsWith('cd')) {
@@ -422,13 +483,13 @@
         }
         // System32 Destruction Easter Egg
         else if (lower.includes('del system32') || lower.includes('rmdir c:\\windows')) {
-          printLine('Deletig C:\\Windows\\System32...', 'error');
+          printLine('Deleting C:\\Windows\\System32...', 'error');
           setTimeout(triggerBSOD, 1000);
         }
         else if (lower === 'exit') {
           printLine('Process terminated. Close window or refresh page.', 'line');
         } 
-        // 2. Unrecognized input -> Send to AI for Evaluation
+        // Send to AI for Snarky Evaluation / Roast
         else {
           const statusElement = printLine('Executing command...', 'line');
           await fetchAIResponse(command, statusElement);
@@ -457,7 +518,6 @@
         );
 
         let replyText = response.toString().trim();
-        // Fallback check to ensure newline formatting if AI forgets \n after error string
         replyText = replyText.replace(/(operable program or batch file\.)\s*/i, "$1\n");
         statusElement.textContent = replyText;
       } catch (err) {
