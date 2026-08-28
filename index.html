@@ -35,26 +35,55 @@
       background-color: var(--bg);
       display: flex;
       flex-direction: column;
-      border: 1px solid #333;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      border: none;
+      box-shadow: none;
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
     }
 
-    /* Title Bar / Navbar */
+    /* Navbar / Title Bar Rules */
     .title-bar {
       background: #1f1f1f;
       height: 32px;
-      display: flex;
+      display: none; /* Hidden by default in normal screen mode */
       align-items: center;
       justify-content: space-between;
       padding: 0 10px;
       user-select: none;
       border-bottom: 1px solid #2b2b2b;
-      transition: display 0.2s ease;
+    }
+
+    /* Show navbar ONLY when in fullscreen */
+    body.is-fullscreen .title-bar {
+      display: flex;
+    }
+
+    /* Standalone Maximize Button shown ONLY in Normal Screen Mode */
+    #floatingMaximizeBtn {
+      position: fixed;
+      top: 8px;
+      right: 8px;
+      width: 32px;
+      height: 32px;
+      background: #1f1f1f;
+      border: 1px solid #333;
+      color: #888;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      z-index: 999;
+      user-select: none;
+      border-radius: 4px;
+      transition: background 0.15s, color 0.15s;
+    }
+    #floatingMaximizeBtn:hover {
+      background: #333;
+      color: #fff;
     }
     
-    /* Hide Title Bar when in fullscreen mode */
-    body.is-fullscreen .title-bar {
+    /* Hide floating maximize button when in fullscreen */
+    body.is-fullscreen #floatingMaximizeBtn {
       display: none;
     }
 
@@ -124,24 +153,6 @@
       padding: 0;
     }
 
-    /* Floating restoration hint when in full screen without navbar */
-    #fsHint {
-      display: none;
-      position: fixed;
-      top: 10px;
-      right: 15px;
-      background: rgba(30, 30, 30, 0.8);
-      color: #888;
-      font-size: 11px;
-      padding: 4px 8px;
-      border-radius: 4px;
-      pointer-events: none;
-      z-index: 1000;
-    }
-    body.is-fullscreen #fsHint {
-      display: block;
-    }
-
     /* Simulated BSOD Overlay */
     #bsod {
       display: none;
@@ -160,10 +171,12 @@
 </head>
 <body>
 
-  <div id="fsHint">Press ESC to exit Fullscreen</div>
+  <!-- Floating Maximize Button (Only visible in normal screen mode) -->
+  <div id="floatingMaximizeBtn" title="Enter Fullscreen" onclick="enterFullscreen()">□</div>
 
   <!-- Main Window -->
   <div class="cmd-window" id="cmdWindow">
+    <!-- Navbar (Only visible in Fullscreen mode) -->
     <div class="title-bar" id="titleBar">
       <div class="title-bar-text">
         <div class="cmd-icon">&gt;_</div>
@@ -171,7 +184,7 @@
       </div>
       <div class="window-controls">
         <div class="control-btn" title="Minimize" onclick="funnyMinimize()">─</div>
-        <div class="control-btn" title="Toggle Fullscreen" onclick="toggleScreenMode()">□</div>
+        <div class="control-btn" title="Exit Fullscreen" onclick="exitFullscreen()">□</div>
         <div class="control-btn close" title="Close" onclick="triggerBSOD()">✕</div>
       </div>
     </div>
@@ -207,9 +220,8 @@
     let currentPath = "C:\\Users\\visitor";
     const commandHistory = [];
     let historyIndex = -1;
-    let initialInteractionDone = false;
 
-    // Commands for TAB autocompletion
+    // Available commands for TAB autocompletion
     const autoCommands = [
       'help', 'cls', 'clear', 'dir', 'type', 'ver', 'whoami', 'about', 
       'exit', 'color', 'systeminfo', 'ipconfig', 'ping', 'tree', 'matrix',
@@ -224,22 +236,33 @@
       'c': '#ff5555', 'd': '#ff00ff', 'e': '#ffff00', 'f': '#ffffff'
     };
 
-    // Trigger full screen on first user interaction (Browser security requirement)
+    // Auto Fullscreen Attempt on Load & First User Gesture
     function enterFullscreen() {
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(() => {});
       }
     }
 
-    document.body.addEventListener('click', (e) => {
-      if (!initialInteractionDone) {
-        initialInteractionDone = true;
-        enterFullscreen();
+    function exitFullscreen() {
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
       }
-      if (!e.target.classList.contains('control-btn')) input.focus();
+    }
+
+    // Try opening in fullscreen immediately on window load
+    window.addEventListener('load', () => {
+      enterFullscreen();
     });
 
-    // Listen for Fullscreen Changes to update layout & hide navbar
+    // Fallback: Enable full screen on the very first click anywhere on screen
+    document.body.addEventListener('click', (e) => {
+      enterFullscreen();
+      if (!e.target.classList.contains('control-btn') && e.target.id !== 'floatingMaximizeBtn') {
+        input.focus();
+      }
+    });
+
+    // Track fullscreen mode to toggle navbar visibility dynamically
     document.addEventListener('fullscreenchange', () => {
       if (document.fullscreenElement) {
         document.body.classList.add('is-fullscreen');
@@ -248,15 +271,7 @@
       }
     });
 
-    function toggleScreenMode() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      } else {
-        document.exitFullscreen().catch(() => {});
-      }
-    }
-
-    // Funny Minimize Button Action
+    // Funny Minimize Action
     function funnyMinimize() {
       cmdWindow.style.transform = 'scale(0.01) translateY(1000px)';
       cmdWindow.style.opacity = '0';
