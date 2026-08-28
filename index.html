@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>C:\Windows\system32\cmd.exe</title>
-  <!-- Puter.js SDK (No API Keys Required) -->
+  <!-- Puter.js SDK -->
   <script src="https://js.puter.com/v2/"></script>
   <style>
     :root {
@@ -16,22 +16,90 @@
     }
     * { box-sizing: border-box; }
     body {
-      background-color: var(--bg);
+      background-color: #1a1a1a;
       color: var(--text);
       font-family: 'Consolas', 'Courier New', monospace;
       margin: 0;
-      padding: 16px;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* Windows CMD Outer Window Frame */
+    .cmd-window {
+      width: 100vw;
+      height: 100vh;
+      background-color: var(--bg);
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      border: 1px solid #333;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Title Bar */
+    .title-bar {
+      background: #1f1f1f;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      user-select: none;
+      border-bottom: 1px solid #2b2b2b;
+    }
+    .title-bar-text {
+      font-size: 13px;
+      color: #cccccc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cmd-icon {
+      width: 14px;
+      height: 14px;
+      background: #000;
+      border: 1px solid #aaa;
+      color: #fff;
+      font-size: 8px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .window-controls {
+      display: flex;
+    }
+    .control-btn {
+      width: 34px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.1s;
+    }
+    .control-btn:hover { background: #333; color: #fff; }
+    .control-btn.close:hover { background: #e81123; color: #fff; }
+
+    /* Terminal Body */
+    .cmd-body {
+      flex: 1;
+      padding: 12px 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
     }
     #terminal {
       flex: 1;
-      overflow-y: auto;
       white-space: pre-wrap;
       word-break: break-word;
     }
-    .line { margin-bottom: 4px; line-height: 1.3; font-size: 15px; }
+    .line { margin-bottom: 4px; line-height: 1.35; font-size: 15px; color: var(--text); }
     .prompt { color: var(--prompt); }
     .error { color: var(--error); }
     .highlight { color: var(--highlight); font-weight: bold; }
@@ -47,47 +115,137 @@
       margin-left: 0;
       padding: 0;
     }
+
+    /* Simulated BSOD Overlay */
+    #bsod {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background-color: #0078d7;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 80px 10%;
+      z-index: 99999;
+      cursor: pointer;
+    }
+    #bsod h1 { font-size: 100px; margin: 0 0 20px 0; font-weight: normal; }
+    #bsod p { font-size: 24px; line-height: 1.5; margin-bottom: 20px; }
   </style>
 </head>
 <body>
-  <div id="terminal">
-    <div class="line">Microsoft Windows [Version 10.0.22631.3007]</div>
-    <div class="line">(c) Microsoft Corporation. All rights reserved.</div>
-    <div class="line" style="margin-bottom: 12px;">Type <span class="highlight">HELP</span> for built-in CMD utilities, or type any command for live evaluation.</div>
+
+  <!-- Main Window -->
+  <div class="cmd-window">
+    <div class="title-bar">
+      <div class="title-bar-text">
+        <div class="cmd-icon">&gt;_</div>
+        <span id="windowTitle">Command Prompt - C:\Windows\system32\cmd.exe</span>
+      </div>
+      <div class="window-controls">
+        <div class="control-btn" onclick="printLine('Window minimized.', 'line')">─</div>
+        <div class="control-btn" onclick="toggleFullscreen()">□</div>
+        <div class="control-btn close" onclick="triggerBSOD()">✕</div>
+      </div>
+    </div>
+
+    <div class="cmd-body" id="cmdBody">
+      <div id="terminal">
+        <div class="line">Microsoft Windows [Version 10.0.22631.3007]</div>
+        <div class="line">(c) Microsoft Corporation. All rights reserved.</div>
+        <div class="line" style="margin-bottom: 12px;">Type <span class="highlight">HELP</span> for built-in utilities, or type any command/code for live evaluation.</div>
+      </div>
+      <div class="input-line">
+        <span class="prompt" id="promptText">C:\Users\visitor&gt;&nbsp;</span>
+        <input type="text" id="cmdInput" autofocus autocomplete="off" spellcheck="false">
+      </div>
+    </div>
   </div>
-  <div class="input-line">
-    <span class="prompt">C:\Users\visitor&gt;&nbsp;</span>
-    <input type="text" id="cmdInput" autofocus autocomplete="off" spellcheck="false">
+
+  <!-- BSOD Screen -->
+  <div id="bsod" onclick="restartTerminal()">
+    <h1>:(</h1>
+    <p>Your PC ran into a problem and needs to restart. We're just collecting some error info, and then we'll restart for you.</p>
+    <p style="font-size: 18px; margin-top: 40px;">Stop Code: SYSTEM32_DESTROYED_BY_USER_IDIOCY</p>
+    <p style="font-size: 16px; opacity: 0.8; margin-top: 20px;">Click anywhere on screen to reboot system...</p>
   </div>
 
   <script>
     const terminal = document.getElementById('terminal');
     const input = document.getElementById('cmdInput');
+    const promptText = document.getElementById('promptText');
+    const cmdBody = document.getElementById('cmdBody');
 
+    let currentPath = "C:\\Users\\visitor";
     const commandHistory = [];
     let historyIndex = -1;
 
-    // Auto-focus input when clicking anywhere on screen
-    document.body.addEventListener('click', () => input.focus());
+    // Available commands for TAB autocompletion
+    const autoCommands = [
+      'help', 'cls', 'clear', 'dir', 'type', 'ver', 'whoami', 'about', 
+      'exit', 'color', 'systeminfo', 'ipconfig', 'ping', 'tree', 'matrix',
+      'del system32', 'cd', 'cd ..', 'type bio.txt', 'type skills.txt', 'type projects.txt'
+    ];
+
+    // Color code map for Windows COLOR command
+    const colorMap = {
+      '0': '#0c0c0c', '1': '#000080', '2': '#008000', '3': '#008080',
+      '4': '#800000', '5': '#800080', '6': '#808000', '7': '#c0c0c0',
+      '8': '#808080', '9': '#0000ff', 'a': '#00ff66', 'b': '#00ffff',
+      'c': '#ff5555', 'd': '#ff00ff', 'e': '#ffff00', 'f': '#ffffff'
+    };
+
+    // Auto-focus input when clicking terminal screen
+    document.body.addEventListener('click', (e) => {
+      if(!e.target.classList.contains('control-btn')) input.focus();
+    });
 
     function printLine(text, className = '') {
       const line = document.createElement('div');
       line.className = 'line ' + className;
       line.textContent = text;
       terminal.appendChild(line);
-      terminal.scrollTop = terminal.scrollHeight;
+      cmdBody.scrollTop = cmdBody.scrollHeight;
       return line;
     }
 
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function triggerBSOD() {
+      document.getElementById('bsod').style.display = 'block';
+    }
+
+    function restartTerminal() {
+      document.getElementById('bsod').style.display = 'none';
+      terminal.innerHTML = '';
+      printLine('Microsoft Windows [Version 10.0.22631.3007]', 'line');
+      printLine('(c) Microsoft Corporation. All rights reserved.\n', 'line');
+      currentPath = "C:\\Users\\visitor";
+      promptText.textContent = `${currentPath}> `;
+    }
+
+    // Keydown Handling (Enter, Arrows, Tab)
     input.addEventListener('keydown', async (e) => {
-      // Arrow Up / Down Command History
-      if (e.key === 'ArrowUp') {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const val = input.value.trim().toLowerCase();
+        if (!val) return;
+        const match = autoCommands.find(c => c.startsWith(val));
+        if (match) input.value = match;
+      } 
+      else if (e.key === 'ArrowUp') {
         e.preventDefault();
         if (commandHistory.length > 0 && historyIndex > 0) {
           historyIndex--;
           input.value = commandHistory[historyIndex];
         }
-      } else if (e.key === 'ArrowDown') {
+      } 
+      else if (e.key === 'ArrowDown') {
         e.preventDefault();
         if (historyIndex < commandHistory.length - 1) {
           historyIndex++;
@@ -96,82 +254,202 @@
           historyIndex = commandHistory.length;
           input.value = '';
         }
-      } else if (e.key === 'Enter') {
+      } 
+      else if (e.key === 'Enter') {
         const command = input.value.trim();
         if (!command) return;
 
-        printLine(`C:\\Users\\visitor> ${command}`, 'prompt');
+        printLine(`${currentPath}> ${command}`, 'prompt');
         commandHistory.push(command);
         historyIndex = commandHistory.length;
         input.value = '';
 
         const lower = command.toLowerCase();
 
+        // 1. Built-in Local Commands
         if (lower === 'cls' || lower === 'clear') {
           terminal.innerHTML = '';
-        } else if (lower === 'help') {
+        } 
+        else if (lower === 'help') {
           printLine(
             'For more information on a specific command, type HELP command-name\n\n' +
             'CLS            Clears the screen.\n' +
-            'DIR            Displays a list of files and subdirectories in a directory.\n' +
+            'DIR            Displays a list of files and subdirectories.\n' +
+            'CD             Displays or changes the current directory.\n' +
             'TYPE           Displays the contents of a text file (e.g., TYPE bio.txt).\n' +
+            'COLOR          Sets default console foreground and background colors (e.g., COLOR 0A).\n' +
+            'SYSTEMINFO     Displays machine-specific properties and configuration.\n' +
+            'IPCONFIG       Displays all current TCP/IP network configuration values.\n' +
+            'PING           Tests connection to a target host.\n' +
+            'TREE           Graphically displays the directory structure of a path.\n' +
+            'MATRIX         Activates high-speed binary terminal mode.\n' +
             'VER            Displays the Windows version.\n' +
-            'ABOUT          To know about me.\n' +
-            'WHOAMI         Displays current logged-in user identity.\n' +
+            'ABOUT / WHOAMI Displays identity & developer bio.\n' +
             'EXIT           Quits the CMD.exe program.\n\n' +
-            '* Any unrecognized command will be evaluated live by the AI daemon.',
+            '* Legitimate code/queries are evaluated live by AI with snarky approval.\n' +
+            '* Trash inputs/invalid syntax will trigger Windows CMD roasts.',
             'line'
           );
-        } else if (lower === 'ver') {
+        }
+        else if (lower.startsWith('color')) {
+          const arg = lower.split(' ')[1];
+          if (!arg || arg === 'reset') {
+            document.documentElement.style.setProperty('--bg', '#0c0c0c');
+            document.documentElement.style.setProperty('--text', '#cccccc');
+            printLine('Color reset to default.', 'line');
+          } else if (arg.length === 2 && colorMap[arg[0]] && colorMap[arg[1]]) {
+            document.documentElement.style.setProperty('--bg', colorMap[arg[0]]);
+            document.documentElement.style.setProperty('--text', colorMap[arg[1]]);
+            printLine(`Console color updated (${arg.toUpperCase()}).`, 'line');
+          } else {
+            printLine('Sets default console colors. Usage: COLOR [attr] (e.g., COLOR 0A for Matrix Green, COLOR 0F for White)', 'line');
+          }
+        }
+        else if (lower.startsWith('cd')) {
+          const dir = command.split(' ')[1];
+          if (!dir || dir === '.' || dir === '\\') {
+            currentPath = "C:\\Users\\visitor";
+          } else if (dir === '..') {
+            currentPath = "C:\\Users";
+          } else if (dir.toLowerCase() === 'desktop') {
+            currentPath = "C:\\Users\\visitor\\Desktop";
+          } else if (dir.toLowerCase() === 'system32') {
+            currentPath = "C:\\Windows\\System32";
+          } else {
+            printLine(`The system cannot find the path specified: '${dir}'`, 'error');
+          }
+          promptText.textContent = `${currentPath}> `;
+        }
+        else if (lower === 'systeminfo') {
+          printLine(
+            'Host Name:                 TADDY-RIG-V8\n' +
+            'OS Name:                   Microsoft Windows 11 Pro\n' +
+            'OS Version:                10.0.22631 N/A Build 22631\n' +
+            'System Manufacturer:       Taddy Customs Inc.\n' +
+            'Processor(s):              1 Processor(s) Installed. [i9-14900K @ 6.0GHz]\n' +
+            'Total Physical Memory:     64,512 MB (Vibe-Oriented High Speed RAM)\n' +
+            'Specialty:                 Building REST APIs, gaming at 240FPS, roasting invalid syntax.',
+            'line'
+          );
+        }
+        else if (lower === 'ipconfig') {
+          printLine(
+            'Windows IP Configuration\n\n' +
+            'Ethernet adapter Ethernet 0:\n' +
+            '   Connection-specific DNS Suffix  . : localdomain\n' +
+            '   IPv4 Address. . . . . . . . . . . : 192.168.1.1337\n' +
+            '   Subnet Mask . . . . . . . . . . . : 255.255.255.0\n' +
+            '   Default Gateway . . . . . . . . . : 192.168.1.1 (No Place Like Home)',
+            'line'
+          );
+        }
+        else if (lower.startsWith('ping')) {
+          const target = command.split(' ')[1] || 'google.com';
+          printLine(`Pinging ${target} with 32 bytes of data:`);
+          printLine(`Reply from 127.0.0.1: bytes=32 time=1ms TTL=128`);
+          printLine(`Reply from 127.0.0.1: bytes=32 time=2ms TTL=128`);
+          printLine(`Ping statistics for ${target}:`);
+          printLine(`    Packets: Sent = 2, Received = 2, Lost = 0 (0% loss). Latency: Optimal.`);
+        }
+        else if (lower === 'tree') {
+          printLine(
+            'Folder PATH listing for volume C:\n' +
+            'C:\\USERS\\VISITOR\n' +
+            '├─── Desktop\n' +
+            '│    ├─── Secret_Gaming_Clips\n' +
+            '│    └─── Gym_Routine.txt\n' +
+            '├─── Projects\n' +
+            '│    ├─── React_NextJS_Apps\n' +
+            '│    ├─── SpringBoot_Backend\n' +
+            '│    └─── 3D_Editors\n' +
+            '└─── bio.txt',
+            'line'
+          );
+        }
+        else if (lower === 'matrix') {
+          printLine('Initializing Matrix stream... Type CLS to exit.', 'highlight');
+          for(let i=0; i<15; i++) {
+            printLine(Array(60).fill(0).map(()=>Math.floor(Math.random()*2)).join(' '), 'line');
+          }
+        }
+        else if (lower === 'ver') {
           printLine('Microsoft Windows [Version 10.0.22631.3007]', 'line');
-        } else if (lower === 'whoami') {
+        }
+        else if (lower === 'whoami') {
           printLine('TADDY-PC\\visitor', 'line');
-        } else if (lower === 'dir') {
+        }
+        else if (lower === 'dir') {
           printLine(
             ' Volume in drive C has no label.\n' +
-            ' Volume Serial Number is A8F4-99B2\n\n' +
-            ' Directory of C:\\Users\\visitor\n\n' +
-            '08/26/2026  10:00 AM    <DIR>          .\n' +
-            '08/26/2026  10:00 AM    <DIR>          ..\n' +
-            '08/26/2026  10:00 AM             1,240 bio.txt\n' +
-            '08/26/2026  10:00 AM               680 skills.txt\n' +
-            '08/26/2026  10:00 AM               920 projects.txt\n' +
+            ' Directory of ' + currentPath + '\n\n' +
+            '08/28/2026  04:00 PM    <DIR>          .\n' +
+            '08/28/2026  04:00 PM    <DIR>          ..\n' +
+            '08/28/2026  04:00 PM             1,240 bio.txt\n' +
+            '08/28/2026  04:00 PM               680 skills.txt\n' +
+            '08/28/2026  04:00 PM               920 projects.txt\n' +
             '               3 File(s)          2,840 bytes\n' +
             '               2 Dir(s)  452,104,220,672 bytes free',
             'line'
           );
-        } else if (lower === 'type bio.txt' || lower === 'cat bio.txt' || lower === 'about') {
+        }
+        else if (lower === 'type bio.txt' || lower === 'cat bio.txt' || lower === 'about') {
           printLine(
             '[NAME]: Taddy\n' +
-            '[ROLE]: Software Development Enthusiast & Full-Stack Creator\n' +
-            '[INTERESTS]: Building practical apps, gaming, cars, video editing, gym/fitness.\n' +
-            '[SPECIALTY]: Building by doing... and landing perfectly timed, ruthless roasts.',
+            '[ROLE]: Software Developer & Full-Stack Creator\n' +
+            '[STACK]: Java, JS, TS, React.js, Next.js, Spring Boot, PostgreSQL, Tailwind, Electron\n' +
+            '[INTERESTS]: Practical apps, gaming, cars, video editing, gym/fitness.\n' +
+            '[SPECIALTY]: Building stuff... and landing perfectly timed, ruthless roasts.',
             'line'
           );
-        } else if (lower === 'type skills.txt') {
+        }
+        else if (lower === 'type skills.txt') {
           printLine(
             '[CORE LANGUAGES]: Java, JavaScript, TypeScript\n' +
             '[FRAMEWORKS]: React.js, Next.js, Spring Boot, Tailwind CSS\n' +
             '[TOOLS & DATABASES]: PostgreSQL, REST APIs, Git, GitHub, Electron, Netlify',
             'line'
           );
-        } else if (lower === 'type projects.txt') {
+        }
+        else if (lower === 'type projects.txt') {
           printLine(
-            '[PROJECTS]: Full-Stack Websites, Management Systems, Desktop Applications, REST APIs, 3D Editors.',
+            '[PROJECTS]: Full-Stack Web Apps, Management Systems, Desktop Applications, REST APIs, 3D Editors.',
             'line'
           );
-        } else if (lower === 'exit') {
+        }
+        // Easter Egg Linux Snark
+        else if (['sudo', 'ls', 'grep', 'nano', 'vim', 'chmod', 'pkill', 'apt'].some(cmd => lower.startsWith(cmd))) {
+          printLine(`'${command.split(' ')[0]}' is not recognized. Take your Linux commands back to WSL, buddy.`, 'error');
+        }
+        // System32 Destruction Easter Egg
+        else if (lower.includes('del system32') || lower.includes('rmdir c:\\windows')) {
+          printLine('Deletig C:\\Windows\\System32...', 'error');
+          setTimeout(triggerBSOD, 1000);
+        }
+        else if (lower === 'exit') {
           printLine('Process terminated. Close window or refresh page.', 'line');
-        } else {
+        } 
+        // 2. Unrecognized input -> Send to AI for Evaluation
+        else {
           const statusElement = printLine('Executing command...', 'line');
           await fetchAIResponse(command, statusElement);
         }
       }
     });
 
+    // AI Evaluation Logic
     async function fetchAIResponse(userPrompt, statusElement) {
       try {
-        const systemPrompt = "System Role: You are the sarcastic Windows Command Prompt (cmd.exe) AI backend for Taddy (a software developer skilled in Java, JS, TS, React, Next.js, Spring Boot who loves gaming, cars, fitness, and roasting people). Answer questions about Taddy or software engineering accurately. If the user types invalid CMD commands, syntax errors, silly inputs, or trash talk, start with ''" + userPrompt + "' is not recognized as an internal or external command, operable program or batch file.' on its own line, followed by a newline (\\n) before delivering your roast. Keep all responses under 3 sentences.";
+        const systemPrompt = 
+          "System Role: You are the sarcastic Windows Command Prompt (cmd.exe) AI backend for Taddy (a software developer skilled in Java, JS, TS, React, Next.js, Spring Boot who loves gaming, cars, fitness, and roasting people).\n\n" +
+          "CRITICAL EVALUATION RULES:\n" +
+          "1. IF the user's command/query is LEGITIMATE tech questions, valid code, proper programming syntax, or sensible shell questions:\n" +
+          "   - DO NOT output ''" + userPrompt + "' is not recognized...'.\n" +
+          "   - Give the actual correct answer/code directly, but sarcastically congratulate them for using their brain and actually knowing how to write commands/code for once.\n\n" +
+          "2. IF the user's input is INVALID command syntax, gibberish, silly inputs, or trash talk:\n" +
+          "   - You MUST start your response with exact line:\n" +
+          "     '" + userPrompt + "' is not recognized as an internal or external command, operable program or batch file.\n" +
+          "   - Follow it on a NEW LINE (\\n) with a hilarious Windows CMD style roast.\n\n" +
+          "Keep total responses concise (under 3 sentences total).";
 
         const response = await puter.ai.chat(
           `${systemPrompt}\n\nUser Input: ${userPrompt}`,
@@ -179,11 +457,11 @@
         );
 
         let replyText = response.toString().trim();
-        // Force a new line after the 'not recognized' sentence if the AI didn't include one
+        // Fallback check to ensure newline formatting if AI forgets \n after error string
         replyText = replyText.replace(/(operable program or batch file\.)\s*/i, "$1\n");
         statusElement.textContent = replyText;
       } catch (err) {
-        statusElement.textContent = `'${userPrompt}' is not recognized as an internal or external command, operable program or batch file.\n`;
+        statusElement.textContent = `'${userPrompt}' is not recognized as an internal or external command, operable program or batch file.`;
         statusElement.className = 'line error';
       }
     }
