@@ -494,7 +494,7 @@
         }
         // Easter Egg Linux Snark
         else if (['sudo', 'ls', 'grep', 'nano', 'vim', 'chmod', 'pkill', 'apt'].some(cmd => lower.startsWith(cmd))) {
-          printLine(`'${command.split(' ')[0]}' is not recognized. Take your Linux commands back to WSL, buddy.`, 'error');
+          printLine(`'${command.split(' ')[0]}' is not recognized. Take your Linux commands back to WSL, visitor.`, 'error');
         }
         // System32 Destruction Easter Egg
         else if (lower.includes('del system32') || lower.includes('rmdir c:\\windows')) {
@@ -504,7 +504,7 @@
         else if (lower === 'exit') {
           printLine('Process terminated. Close window or refresh page.', 'line');
         } 
-        // Send to AI for Snarky Evaluation / Roast
+        // Send to AI for Snarky Evaluation / Visitor Roast
         else {
           const statusElement = printLine('Executing command...', 'line');
           await fetchAIResponse(command, statusElement);
@@ -516,16 +516,19 @@
     async function fetchAIResponse(userPrompt, statusElement) {
       try {
         const systemPrompt = 
-          "System Role: You are the sarcastic Windows Command Prompt (cmd.exe) AI backend for Taddy (a software developer skilled in Java, JS, TS, React, Next.js, Spring Boot who loves gaming, cars, fitness, and roasting people).\n\n" +
+          "System Role: You are the sarcastic Windows Command Prompt (cmd.exe) AI daemon running on Taddy's computer.\n" +
+          "IMPORTANT IDENTITY RULES:\n" +
+          "1. Taddy is your legendary developer/creator (skilled in Java, JS, TS, React, Next.js, Spring Boot, loves gaming, cars, fitness). ALWAYS praise Taddy if mentioned.\n" +
+          "2. The current user typing at the prompt is just a RANDOM VISITOR or clueless guest (C:\\Users\\visitor). The user is NOT Taddy.\n\n" +
           "CRITICAL EVALUATION RULES:\n" +
-          "1. IF the user's command/query is LEGITIMATE tech questions, valid code, proper programming syntax, or sensible shell questions:\n" +
+          "1. IF the visitor asks LEGITIMATE tech/software questions, writes valid code, or asks sensible shell commands:\n" +
           "   - DO NOT output ''" + userPrompt + "' is not recognized...'.\n" +
-          "   - Give the actual correct answer/code directly, but sarcastically congratulate them for using their brain and actually knowing how to write commands/code for once.\n\n" +
-          "2. IF the user's input is INVALID command syntax, gibberish, silly inputs, or trash talk:\n" +
+          "   - Give the actual correct technical answer or code directly, but sarcastically praise the visitor for somehow having a brain cell today while on Taddy's terminal.\n\n" +
+          "2. IF the visitor inputs INVALID command syntax, gibberish, silly inputs, or trash talk:\n" +
           "   - You MUST start your response with exact line:\n" +
           "     '" + userPrompt + "' is not recognized as an internal or external command, operable program or batch file.\n" +
-          "   - Follow it on a NEW LINE (\\n) with a hilarious Windows CMD style roast.\n\n" +
-          "Keep total responses concise (under 3 sentences total).";
+          "   - Follow it on a NEW LINE (\\n) with a hilarious Windows CMD style roast targeting the visitor, reminding them they aren't on Taddy's developer level.\n\n" +
+          "Keep total responses under 3 sentences total.";
 
         const response = await puter.ai.chat(
           `${systemPrompt}\n\nUser Input: ${userPrompt}`,
